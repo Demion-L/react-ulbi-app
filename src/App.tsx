@@ -1,17 +1,24 @@
 import React from "react";
 
 import "./App.css";
-import { userSlice } from "./store/reducers/UserSlice";
 import { useAppDispatch, useAppSelector } from "./hooks/redux";
+import { fetchUsers } from "./store/reducers/ActionCreators";
 
 function App() {
-  const { count } = useAppSelector((state) => state.userReducer);
-  const { increment } = userSlice.actions;
   const dispatch = useAppDispatch();
+  const { users, isLoading, error } = useAppSelector(
+    (state) => state.userReducer
+  );
+
+  React.useEffect(() => {
+    dispatch(fetchUsers());
+  }, []);
 
   return (
     <div className='App'>
-      <h1 className='bg-indigo-600 text-lg text-slate-50'>Hello world</h1>
+      {isLoading && <h1>Loading...</h1>}
+      {error && <h1>Error: {error}</h1>}
+      <div>{JSON.stringify(users, null, 2)}</div>
     </div>
   );
 }
